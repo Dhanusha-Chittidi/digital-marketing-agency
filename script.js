@@ -42,13 +42,29 @@ function showSlides(n) {
 function changeImage(imageSrc) {
     document.getElementById('project-image').src = imageSrc;
 }
-document.getElementById("contactForm").onsubmit = function() {
-    sessionStorage.setItem('formSubmitted', 'true');
-};
+document.getElementById("contactForm").onsubmit = function(event) {
+    event.preventDefault(); // Prevent the default form submission
 
-window.onload = function() {
-    if (sessionStorage.getItem('formSubmitted') === 'true') {
-        document.getElementById("contactForm").reset();
-        sessionStorage.removeItem('formSubmitted');
-    }
+   
+    const formData = new FormData(this);
+
+    // Post form data to the server
+    fetch(this.action, {
+        method: this.method,
+        body: formData,
+    }).then(response => {
+        if (response.ok) {
+            // Reset form fields
+            this.reset();
+
+            // Additional logic like showing a success message can go here
+            alert("Form submitted successfully!");
+        } else {
+            alert("There was an error submitting the form.");
+        }
+    }).catch(error => {
+        // Handle network errors here
+        console.error('Error:', error);
+        alert("There was an error submitting the form.");
+    });
 };
